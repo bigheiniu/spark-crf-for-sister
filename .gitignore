@@ -1,0 +1,7 @@
+target/
+project/target/
+resources/
+bin/*.sh
+data/
+*.swp
+*.tmp

@@ -1,0 +1,1 @@
+{"class":"com.intel.imllib.ffm.classification.FFMModel$SaveLoadV1_0$","version":"1.0","numFeatures":123,"numFields":14,"n_iters":3,"eta":0.01,"lambda":2.0E-5,"isNorm":false,"random":false,"sgd":false}

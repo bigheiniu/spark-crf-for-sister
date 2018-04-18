@@ -6,8 +6,7 @@ import com.intel.imllib.crf.nlp.{Sequence, Token}
 import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, HashMap => MHash, Map}
 import scala.collection.immutable.{HashMap => ImHash}
-import scala.util.matching.Regex
-
+import scala.io.Source
 
 /**
   * 对 tokens 进行处理
@@ -17,6 +16,7 @@ object FeatureExtract {
 
   private val positive = "Y"
   private val negative = "N"
+
   private def corpus_data_contain_features(tableDict: ImHash[String, Array[String]], sequence: Array[String], fileTag: Int, id: Int): Array[ImHash[String, Any]] = {
     val features_list = new ArrayBuffer[MHash[String,Any]]()
     //词性判断可能需要专门的程序, 不能直接从文件中读取, 所以删除了这一步的内容
@@ -32,8 +32,8 @@ object FeatureExtract {
         case _ => {
           val wordWithLabel = word.split("""\|""")
           try {
-          val token = wordWithLabel(0)
-          val features = mutable.HashMap[String, Any]("POS_feature" -> "None")
+            val token = wordWithLabel(0)
+            val features = mutable.HashMap[String, Any]("POS_feature" -> "None")
             features ++= {
             // TODO: 因为我是一句一句读, 所以省略了"sent_end_tag"
             //"BIEO" -> wordWithLabel(1)
@@ -41,9 +41,12 @@ object FeatureExtract {
               else mutable.HashMap("id" -> "None", "token" -> token)
             }
             features_list.append(features ++= features_extract(token,tableDict))
+
           }
           catch {
-            case _: Throwable => println(s"the fucking is $id and the word is $word" )
+            case _: Throwable => {
+              println(s"the fucking is $id and the word is $word" )
+            }
           }
         }}}
     )
@@ -227,18 +230,17 @@ object FeatureExtract {
   // TODO: 需要换一个地方, 放在程序外面
    def get_table_content(dir: String): ImHash[String, Array[String]] = {
    val table_dict = new mutable.HashMap[String, Array[String]]()
-    import scala.io.Source
-     import java.io.File
-     val path = getClass.getResource(dir)
-     val folder = new File(path.getPath)
-     if(folder.exists() && folder.isDirectory)
-       folder.listFiles.toList.foreach(
+     val fileStream = getClass.getResourceAsStream("/filename.txt")
+     val lines = Source.fromInputStream(fileStream).getLines()
+     lines.foreach(
          file => {
+           println(file.toString)
            var i = 0
            val POSlist = new ArrayBuffer[String]()
-           if (file.getName.contains("genia_taggered")) i = 2
-           else if (file.getName.contains("Mostfrequentlywords")) i = 1
-           Source.fromFile(file).getLines().filter(_.nonEmpty).foreach(arr => POSlist.append(arr.split("\t")(i)))
+           if (file.contains("genia_taggered")) i = 2
+           else if (file.contains("Mostfrequentlywords")) i = 1
+           Source.fromInputStream(getClass.getResourceAsStream("/" + file)).getLines().filter(_.nonEmpty).foreach(arr => POSlist.append(arr.split("\t")(i)))
+           table_dict.put(file,POSlist.toArray)
          }
        )
     ImHash(table_dict.toSeq: _*)

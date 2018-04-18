@@ -2,12 +2,9 @@ import java.io._
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.functions._
-import com.databricks.spark.corenlp.functions._
 import com.intel.imllib.crf.nlp._
 import com.intel.imllib.util._
-import org.apache.spark.sql.SparkSession
-import
+
 
 object Train extends App {
 
@@ -23,27 +20,30 @@ object Train extends App {
       val testFile = args(2)
 //      val tableFile = args(3)
       val parition = args(3).toInt
+    val saveFile = args(4)
     val t1 = System.nanoTime()
     val conf = new SparkConf().setAppName("CRFExample")
     val sc = new SparkContext(conf)
     val templates: Array[String] = sc.textFile(templateFile).collect().filter(_.nonEmpty)
       val bcTem = sc.broadcast(templates)
       val trainRDD = sc.textFile(trainFile,parition).filter(_.nonEmpty).map(_.split("\t"))
-    val table = FeatureExtract.get_table_content("table/")
+    val table = FeatureExtract.get_table_content("/table/")
     val bcTable = sc.broadcast(table)
     val trainResult = trainRDD.map(arr => FeatureExtract.getSequece(arr,bcTable.value,1,0)).cache()
-    val testRDD =  sc.textFile(testFile,parition).filter(_.nonEmpty).map(_.split("\t"))
+
+      val testRDD =  sc.textFile(testFile,parition).filter(_.nonEmpty).map(_.split("\t"))
+
     val testResult= testRDD.map(arr => FeatureExtract.getSequece(arr,bcTable.value,1,0)).cache()
 
     val model: CRFModel = CRF.train(bcTem.value, trainResult, 0.25, 1, 100, 1E-3, "L1")
 
 
-    val path = "target/model/model3"
-    new java.io.File(path).mkdir()
-    CRFModel.saveBinaryFile(model, path)
-    val modelFromFile3 = CRFModel.loadBinaryFile(path)
+//    val path = "target/model/model3"
+//    new java.io.File(path).mkdir()
+//    CRFModel.saveBinaryFile(model, path)
+//    val modelFromFile3 = CRFModel.loadBinaryFile(path)
 
-    val results: RDD[Sequence] = modelFromFile3.setNBest(10)
+    val results: RDD[Sequence] = model.setNBest(10)
       .setVerboseMode(VerboseLevel1)
       .predict(testResult)
 
@@ -60,13 +60,13 @@ object Train extends App {
         val P = TP / (TPFP * 1.0)
         val R = TP / (TPFN * 1.0)
         val F = 2 * P * R /( P + R)
-        println(s"P is : $P and ${TP} / ${TPFP}")
-        println(s"R is : $R and ${TP} / ${TPFN}")
-        println(s"F is : $F")
-        println(s"the model save at $path")
+
+//        println(s"the model save at $path")
     val t2 = System.nanoTime()
     val time = (t2 - t1) / 1e9d
-    println(s"the time is $time")
+    val arr = Array(s"P is : $P and ${TP} / ${TPFP} \n",s"R is : $R and ${TP} / ${TPFN} \n",s"F is : $F \n",s"the time is $time")
+
+    sc.parallelize(arr).saveAsTextFile(saveFile)
 //        println()
 
         sc.stop()

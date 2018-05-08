@@ -31,13 +31,6 @@ object Preprocess {
     (rddOutput,fileNames)
   }
 
-
-// def main(args: Array[String]): Unit = {
-//  val spark = SparkSession.builder().master("local[*]").appName("crfTest").getOrCreate()
-//  val dir = "/Users/bigheiniu/course/graduate_pro/spark-crf/spar-crf-data/raw"
-//  val (fileRdd,fileNames) = preprocess(spark,dir)
-//    println("the fucking result is +" + fileRdd.count())
-// }
 }
 
 

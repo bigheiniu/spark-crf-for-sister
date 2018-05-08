@@ -7,11 +7,9 @@ import scala.collection.mutable.ArrayBuffer
 object RunCrf extends App {
 
   override def main(args: Array[String]): Unit = {
-    if (args.length != 5) println(" FuckRun <model> <fileDir> <tableDir> <outputdir> <partitions>")
     val modelFile = args(0)
     val excutFile = args(1)
     val fileFlag = 0
-    val tableDir = args(2)
     val outputDir = args(3)
     val partion = args(4).toInt
 

@@ -33,7 +33,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="SBT: org.slf4j:slf4j-log4j12:1.7.16:jar" level="project" />
-    <orderEntry type="library" name="SBT: org.slf4j:slf4j-api:1.7.16:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="SBT: org.scalanlp:breeze-natives_2.11:0.11.2:jar" level="project" />
     <orderEntry type="library" name="SBT: log4j:log4j:1.2.17:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="SBT: com.github.fommil.netlib:netlib-native_system-win-x86_64:1.1:natives:jar" level="project" />
@@ -200,5 +199,8 @@
     <orderEntry type="library" scope="PROVIDED" name="SBT: org.xerial.snappy:snappy-java:1.1.2.6:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="SBT: oro:oro:2.0.8:jar" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="SBT: xmlenc:xmlenc:0.52:jar" level="project" />
+    <orderEntry type="library" name="SBT: ch.qos.logback:logback-classic:1.2.3:jar" level="project" />
+    <orderEntry type="library" name="SBT: ch.qos.logback:logback-core:1.2.3:jar" level="project" />
+    <orderEntry type="library" name="SBT: org.slf4j:slf4j-api:1.7.25:jar" level="project" />
   </component>
 </module>

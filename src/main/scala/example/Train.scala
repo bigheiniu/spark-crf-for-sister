@@ -16,7 +16,7 @@ object Train extends App {
     val testFile = args(2)
     val parition = args(3).toInt
     val savefileResult = args(4)
-    val saveModel = args(4)
+    val saveModel = args()
     val t1 = System.nanoTime()
     val conf = new SparkConf().setAppName("CRF train")
     val sc = new SparkContext(conf)

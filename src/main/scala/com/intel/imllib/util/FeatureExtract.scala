@@ -228,7 +228,7 @@ object FeatureExtract {
   }
 
   // TODO: 需要换一个地方, 放在程序外面
-   def get_table_content(dir: String): ImHash[String, Array[String]] = {
+   def get_table_content(): ImHash[String, Array[String]] = {
    val table_dict = new mutable.HashMap[String, Array[String]]()
      val fileStream = getClass.getResourceAsStream("/filename.txt")
      val lines = Source.fromInputStream(fileStream).getLines()

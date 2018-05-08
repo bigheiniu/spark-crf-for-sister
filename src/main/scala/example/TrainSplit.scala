@@ -16,16 +16,11 @@ object TrainSplit {
     val testFile = args(2)
     val tableFile = args(3)
     val partition = args(4).toInt
-//    val templateFile = "data/crf/Mytemplate"
-//    val trainFile = "data/crf/train_result.txt"
-//    val testFile = "data/crf/test_result.txt"
-//    val tableFile = "table/"
-//    val partition = 8
     val conf = new SparkConf().setAppName("CRFTrainSplit").setMaster("local[*]")
     val sc = new SparkContext(conf)
     val templates: Array[String] = scala.io.Source.fromFile(templateFile).getLines().filter(_.nonEmpty).toArray
     val trainRDD = sc.textFile(trainFile,partition).filter(_.nonEmpty).map(_.split("\t"))
-    val table = FeatureExtract.get_table_content(tableFile)
+    val table = FeatureExtract.get_table_content()
     val bcTable = sc.broadcast(table)
     val trainResult = trainRDD.mapPartitions(thu => thu.map(arr => FeatureExtract.getSequece(arr,bcTable.value,1,0))).zipWithIndex().cache()
     val testRDD =  sc.textFile(testFile,partition).filter(_.nonEmpty).map(_.split("\t"))

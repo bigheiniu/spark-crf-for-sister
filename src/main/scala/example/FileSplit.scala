@@ -26,7 +26,7 @@ object FileSplit {
 
     testCase.foreach(number => {
       val t1 = System.nanoTime()
-      val table = FeatureExtract.get_table_content(tableDir)
+      val table = FeatureExtract.get_table_content()
       val bcTable = spark.sparkContext.broadcast(table)
       val middleFileRdd = fileRdd.filter(arr => arr._1 < number.toLong)
       val featureRdd = middleFileRdd.map(arr => FeatureExtract.getSequece(arr._2,bcTable.value,fileFlag,arr._1.toInt)).cache()
